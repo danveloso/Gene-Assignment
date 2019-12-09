@@ -23,7 +23,7 @@ public class Gene {
 		Gene gene = new Gene();
 		
 		//importing all data from given file
-		gene.setup(10,20000,20,10,"GENES.txt");
+		gene.setup(10,20000,20,10,"Test.txt");
 		
 		for(int i = 0; i < gene.maxTests; i++) { //testing through each of the test cases
 			double tempValue = gene.testing(gene.tests[i][0],gene.tests[i][1],gene.maxMutations);
@@ -45,15 +45,18 @@ public class Gene {
 		int currentMutations = 0;
 		int minimutations = 0;
 		int oneMutation = 1;
+		int nextMutation = 1;
 		while(!lineup.isEmpty()) { // as long as there are things in the queue
 			if(currentMutations < maxMutations) { // if there has been less mutations than the max
 					Node<Node> Mutation1 = null;
+					int chance = 0;
 					ArrayList<Node> Mutation2s = new ArrayList();
 					ArrayList<Node> Mutation3s = new ArrayList(); 
 					
 					//check all mutations for first in the queue	
 					Mutation1 = Mutation1(lineup.peek());
 					if(Mutation1 != null) {
+						chance = 1;
 						lineup.enqueue(Mutation1);
 					}
 					Mutation2s = Mutation2(lineup.peek());
@@ -72,19 +75,23 @@ public class Gene {
 					}
 					//if the current Node is the final node store it's chances
 					if((lineup.peek().toString()).equals((end.toString()))) {
+						System.out.println("FOUND IT BITCH");
 						double tempChances = lineup.getChance();
 						if(chances < tempChances)//if the last chances are smaller than current chances, update chances
 						chances = tempChances;
 					}
+					nextMutation = nextMutation + chance + Mutation2s.size() + Mutation3s.size();
 					minimutations += 1	; //represents a *portion* of a mutation
 					if(minimutations == oneMutation) {
 						currentMutations++;
 						minimutations = 0;
-						oneMutation = 1 + Mutation2s.size() + Mutation3s.size();
+						oneMutation = nextMutation;
+						nextMutation = 0;
 					}
 					lineup.dequeue();
 			}
 			if(currentMutations == maxMutations) {
+				System.out.println("FOUND IT BITCH V2");
 				if((lineup.peek().toString()).equals((end.toString()))) {
 					double tempChances = lineup.getChance();
 					if(chances < tempChances)
